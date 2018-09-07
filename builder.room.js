@@ -7,11 +7,6 @@ class BuilderRoom {
         this.room = Game.rooms[myRoom];
         this.managers = [];
 
-        //if (rcl >= 2) {
-            this.managers.push(new ExtensionManager(this.room, rcl));
-            this.managers.push(new RoadManager(this.room))
-       // }
-
         if (!this.room.memory.map) {
             this._mapRoom();
             console.log(`Generating grid for ${this.room.name}.`);
@@ -20,6 +15,10 @@ class BuilderRoom {
         if (!this.room.memory.sources) {
             this._mapSources();
         }
+
+        this.managers.push(new ExtensionManager(this.room, rcl));
+        this.managers.push(new RoadManager(this.room, rcl))
+
     }
 
 

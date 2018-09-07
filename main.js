@@ -26,6 +26,8 @@ module.exports.loop = function () {
     }
 
     doWork();
+
+ //   console.log("CPU:",Game.cpu.getUsed())
 };
 
 function clearMemory() {

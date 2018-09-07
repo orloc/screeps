@@ -13,7 +13,7 @@ class BuilderUtils {
         return paths.path
     }
 
-    static _getSquareMap(pos) {
+    static _getSquareMap(pos, map) {
         return [
             {x: pos.x + 1, y: pos.y},
             {x: pos.x - 1, y: pos.y},
@@ -23,7 +23,7 @@ class BuilderUtils {
             {x: pos.x - 1, y: pos.y - 1},
             {x: pos.x - 1, y: pos.y + 1},
             {x: pos.x + 1, y: pos.y - 1},
-        ];
+        ].filter((i) =>  map[i.x][i.y]  !== 'wall');
     }
 
 }

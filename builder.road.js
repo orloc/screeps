@@ -2,8 +2,9 @@ const utils = require('./builder.utils');
 
 class BuilderRoad {
 
-    constructor(myRoom) {
+    constructor(myRoom, rcl) {
         this.room = myRoom;
+        this.rcl = rcl;
         this.initMemory();
     }
 
@@ -16,7 +17,7 @@ class BuilderRoad {
         for (const spawn in Game.spawns) {
             const pos = Game.spawns[spawn].pos;
             toPos[spawn] = pos;
-            roads = roads.concat(utils._getSquareMap(pos));
+            roads = roads.concat(utils._getSquareMap(pos, room.memory.map));
 
             // from spawn to sources
             room.find(FIND_SOURCES).map((s) => {
@@ -25,7 +26,7 @@ class BuilderRoad {
         }
 
         // add the controller
-        roads = roads.concat(utils._getSquareMap(controllerPos));
+        roads = roads.concat(utils._getSquareMap(controllerPos, room.memory.map));
 
         // from controller to spawns
         for (const target in toPos) {
@@ -74,6 +75,8 @@ class BuilderRoad {
             this.room.memory.roads = {};
         }
 
+        if (this.rcl < 3) return this;
+
         const roadMem = this.room.memory.roads;
 
         if (!roadMem.generated_roads) {
@@ -100,6 +103,7 @@ class BuilderRoad {
     }
 
     build() {
+        if (this.rcl < 3) return this;
         const mem = this.room.memory.roads;
 
         if (!BuilderRoad._hasRoadToBuild(mem)) {
@@ -112,15 +116,9 @@ class BuilderRoad {
             return;
         }
 
-        const last = mem.current_roads
-            ? mem.current_roads
-            : 0;
-
+        const last = mem.current_roads ? mem.current_roads : 0;
         const next = Math.min(last + canBuild, mem.generated_roads.length);
-
-        const toBuild = mem.generated_roads.slice(last, next-1);
-
-        console.log(toBuild[0].x, toBuild[0].y);
+        const toBuild = mem.generated_roads.slice(last, next);
 
         BuilderRoad._doBuildroads(toBuild, this.room);
     }
