@@ -25,6 +25,7 @@ module.exports.loop = function () {
         builder.build()
     }
 
+
     doWork();
 
  //   console.log("CPU:",Game.cpu.getUsed())
@@ -129,14 +130,16 @@ function determineMostNeededUnit() {
         .reduce((carry, c) => {
             const creep = Game.creeps[c];
             const cRole = creep.memory.role;
-            if (!carry[cRole]) {
+            if (!carry[cRole] && roles[cRole]) {
                 carry[cRole] = {
                     role: cRole,
                     data: [1],
                     desired: roles[cRole].desiredCount,
                 };
             } else {
-                carry[cRole].data.push(1);
+                if (roles[cRole]){
+                    carry[cRole].data.push(1);
+                }
             }
 
             return carry;
@@ -159,7 +162,7 @@ function determineMostNeededUnit() {
         }, {});
 
         for (const key in roles) {
-            if (!mapped[key]) {
+            if (!mapped[key] && roles[key]) {
                 percentRoles.push({
                     role: key,
                     percentFull: 0,
@@ -187,6 +190,7 @@ function doWork() {
             const roleName = name.toLowerCase().replace(/\d/, '');
             if (!roles[roleName]) {
                 console.log('no valid role for ' + name);
+                delete(roles[roleName]);
                 return;
             }
             creep.memory.role = roleName;
